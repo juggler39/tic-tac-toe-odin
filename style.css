@@ -12,19 +12,33 @@ body {
     border: 1px solid black;
 }
 .game__controls {
-    border: 1px solid black;
+    text-align: center;
+    width: 50vmin;
 }
 .game__name {
-    text-align: center;
     font-size: 5vmin;
 }
 .game__players {
     display: flex;
+    flex-wrap: wrap;
 }
 .game__player {
     flex-grow: 1;
     text-align: center;
     padding: 1vmin;
+}
+.game__input {
+    font-size: 2.5vmin;
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+}
+.game__score {
+    margin: 0.2em;
+    font-size: 2.5vmin;
+}
+.game__start {
+    margin: 0.3em;
+    font-size: 2em;
 }
 .game__field {
     display: grid;

@@ -10,20 +10,25 @@ const gameboard = (() => {
             document.getElementById(index).innerHTML = cell;
         });
     };
-
-    return {
-        move,
-        render,
-    };
+    return { move, render };
 })();
 
-const Player = (name) => {
-    const sayName = () => console.log(name);
-    return { sayName };
+const Player = (initialName, id) => {
+    let name = initialName;
+    let score = 0;
+
+    const changeName = (e) => (name = e.target.value);
+    document.getElementById(id).addEventListener('input', changeName);
+
+    const addScore = () => score++;
+    const getScore = () => score;
+    const getName = () => name;
+
+    return { addScore, getScore, getName };
 };
 
-const jimmie = Player('jimmie');
-
-jimmie.sayName();
+//initialization
+const player1 = Player('Player 1', 'player1');
+const player2 = Player('Player 2', 'player2');
 
 gameboard.render();
