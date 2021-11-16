@@ -1,5 +1,5 @@
 const gameBoard = (() => {
-    const board = ['O', null, 'O', 'X', 'O', 'O', 'O', 'O', 'O'];
+    const board = new Array(9);
     let xIsNext = true;
     const move = (cell) => {
         const mark = xIsNext ? 'X' : 'O';
@@ -43,25 +43,23 @@ const gameBoard = (() => {
     return { move, render, clearBoard, getCell, calculateWinner };
 })();
 
-const Player = (initialName, id, mark) => {
+const Player = (initialName, id) => {
     let name = initialName;
     let score = 0;
-    const getMark = () => mark;
-
     const changeName = (e) => (name = e.target.value);
     document.getElementById(id).addEventListener('input', changeName);
-
     const addScore = () => score++;
     const getScore = () => score;
     const getName = () => name;
-
-    return { addScore, getScore, getName, getMark };
+    return { addScore, getScore, getName };
 };
 
 const gameController = (() => {
+    let moveNumber = 0;
+    let gameIsFinished = false;
+    const player1 = Player('Player 1', 'player1');
+    const player2 = Player('Player 2', 'player2');
     const init = () => {
-        const player1 = Player('Player 1', 'player1', 'X');
-        const player2 = Player('Player 2', 'player2', 'O');
         gameBoard.clearBoard();
         document.querySelectorAll('.js-cell').forEach((cell) => {
             cell.addEventListener('click', handleClick);
@@ -71,14 +69,42 @@ const gameController = (() => {
             .addEventListener('click', startGame);
     };
     const startGame = () => {
+        moveNumber = 0;
+        gameIsFinished = false;
         gameBoard.clearBoard();
     };
+    const stopGame = (winner) => {
+        gameIsFinished = true;
+        setTimeout(() => {
+            if (winner == 'draw') {
+                alert('it is a draw');
+            } else {
+                const winnerPlayer = winner == 'X' ? player1 : player2;
+                alert('The winner is: ' + winnerPlayer.getName());
+                winnerPlayer.addScore();
+            }
+            updateScore();
+        }, 100);
+    };
+
     const handleClick = (cell) => {
-        const id = gameBoard.getCell([cell.target.id]);
-        if (id === null) {
-            gameBoard.move(cell.target.id);
+        if (!gameIsFinished) {
+            const id = gameBoard.getCell([cell.target.id]);
+            if (id === null) {
+                gameBoard.move(cell.target.id);
+            }
+            const winner = gameBoard.calculateWinner();
+            if (winner) {
+                stopGame(winner);
+            } else if (moveNumber === 8) {
+                stopGame('draw');
+            }
+            moveNumber++;
         }
-        console.log(gameBoard.calculateWinner());
+    };
+    const updateScore = () => {
+        document.getElementById('js-player1').innerText = player1.getScore();
+        document.getElementById('js-player2').innerText = player2.getScore();
     };
     return { init, startGame };
 })();
