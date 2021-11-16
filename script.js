@@ -12,6 +12,7 @@ const gameBoard = (() => {
     };
     const clearBoard = () => {
         board.fill(null);
+        xIsNext = true;
         render();
     };
     const render = () => {
@@ -19,8 +20,27 @@ const gameBoard = (() => {
             document.getElementById(index).innerHTML = cell;
         });
     };
+    const calculateWinner = () => {
+        const lines = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6],
+        ];
+        for (let i = 0; i < lines.length; i++) {
+            const [a, b, c] = lines[i];
+            if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+                return board[a];
+            }
+        }
+        return null;
+    };
 
-    return { move, render, clearBoard, getCell };
+    return { move, render, clearBoard, getCell, calculateWinner };
 })();
 
 const Player = (initialName, id, mark) => {
@@ -51,14 +71,14 @@ const gameController = (() => {
             .addEventListener('click', startGame);
     };
     const startGame = () => {
-        console.log('Start');
+        gameBoard.clearBoard();
     };
     const handleClick = (cell) => {
         const id = gameBoard.getCell([cell.target.id]);
         if (id === null) {
-            console.log(cell.target.id);
             gameBoard.move(cell.target.id);
         }
+        console.log(gameBoard.calculateWinner());
     };
     return { init, startGame };
 })();
